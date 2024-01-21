@@ -1,4 +1,11 @@
+const redis = require('redis');
+const redisClient = redis.createClient();
+
 const Post = require('../models/post');
+
+redisClient.on('error', (err) => {
+    console.log('Redis error: ', err);
+});
 
 exports.createPost = async (req, res) => {
     const post = new Post(req.body);
@@ -20,15 +27,30 @@ exports.getPosts = async (req, res) => {
 };
 
 exports.getPost = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
-        if (!post) {
-            return res.status(404).send();
+    const id = req.params.id;
+
+    // Try getting the post from Redis first
+    redisClient.get(id, async (err, data) => {
+        if (err) throw err;
+
+        if (data !== null) {
+            // If the post is in Redis, return it
+            res.send(JSON.parse(data));
+        } else {
+            // If the post is not in Redis, get it from the database
+            try {
+                const post = await Post.findById(id);
+                if (!post) {
+                    return res.status(404).send();
+                }
+                // Then save it in Redis for next time
+                redisClient.setex(id, 3600, JSON.stringify(post)); // Cache it for 1 hour
+                res.send(post);
+            } catch (err) {
+                res.status(500).send(err);
+            }
         }
-        res.send(post);
-    } catch (err) {
-        res.status(500).send(err);
-    }
+    });
 };
 
 exports.updatePost = async (req, res) => {
