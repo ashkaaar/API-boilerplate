@@ -1,9 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const redis = require('redis');
 require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+// Create a new Redis client
+const redisClient = redis.createClient();
+
+redisClient.on('error', (err) => {
+    console.log('Redis error: ', err);
+});
 
 // Add this line
 app.use(express.json());
