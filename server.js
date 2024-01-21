@@ -7,13 +7,15 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Create a new Redis client
-const redisClient = redis.createClient();
+const client = redis.createClient();
 
-redisClient.on('error', (err) => {
-    console.log('Redis error: ', err);
-});
+(async () => {
+    await client.connect();
+})();
 
-// Add this line
+client.on('connect', () => console.log('Redis Client Connected'));
+client.on('error', (err) => console.log('Redis Client Connection Error', err));
+
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
