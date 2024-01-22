@@ -76,3 +76,23 @@ exports.deletePost = async (req, res) => {
         res.status(500).send(err);
     }
 };
+
+exports.getLatestPosts = (req, res, next) => {
+    const n = parseInt(req.params.n);
+    Post.find().sort({ createdAt: -1 }).limit(n)
+        .then(posts => res.json(posts))
+        .catch(err => next(err));
+};
+
+exports.searchPosts = (req, res, next) => {
+    const term = req.params.term;
+    Post.find({ $text: { $search: term } })
+        .then(posts => res.json(posts))
+        .catch(err => next(err));
+};
+
+exports.getPopularPosts = (req, res, next) => {
+    Post.find().sort({ views: -1 }).limit(10)
+        .then(posts => res.json(posts))
+        .catch(err => next(err));
+};
