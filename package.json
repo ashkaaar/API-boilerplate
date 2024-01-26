@@ -1,23 +1,30 @@
 {
-  "name": "scooterson",
+  "name": "Scooterson",
   "version": "1.0.0",
-  "description": "",
+  "description": "Blogging Platform for Scooterson",
   "main": "server.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Avishkar Dandge",
+  "license": "MIT",
   "dependencies": {
-    "dotenv": "^16.3.2",
-    "express": "^4.18.2",
-    "mongodb": "^6.3.0",
-    "mongoose": "^8.1.0",
-    "redis": "^4.6.12"
+    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "compression": "^1.7.4",
+    "dotenv": "^15.0.0",
+    "express": "^4.17.2",
+    "express-async-handler": "^1.2.0",
+    "express-rate-limit": "^7.1.5",
+    "faker": "^6.6.6",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.1.9"
+  },
+  "devDependencies": {
+    "@faker-js/faker": "^8.3.1",
+    "concurrently": "^7.0.0",
+    "nodemon": "^2.0.22"
   }
 }

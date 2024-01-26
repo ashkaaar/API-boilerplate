@@ -1,30 +1,33 @@
+const path = require('path');
 const express = require('express');
-const mongoose = require('mongoose');
-const redis = require('redis');
-require('dotenv').config();
+const colors = require('colors');
+const dotenv = require('dotenv').config();
+const connectDB = require('./config/db');
+const setupMiddleware = require('./middleware/setupMiddleware'); // New
+const port = process.env.PORT || 5001;
+
+connectDB();
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-// Create a new Redis client
-const client = redis.createClient();
-
-(async () => {
-    await client.connect();
-})();
-
-client.on('connect', () => console.log('Redis Client Connected'));
-client.on('error', (err) => console.log('Redis Client Connection Error', err));
+setupMiddleware(app); // New
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => console.log('MongoDB connected...'))
-    .catch(err => console.log(err));
+app.use('/api/posts', require('./routes/postsRoutes')); // Updated
 
-const postRoutes = require('./routes/posts');
-app.use('/posts', postRoutes);
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-});
+  app.get('*', (req, res) =>
+    res.sendFile(
+      path.resolve(__dirname, '../', 'frontend', 'build', 'index.html')
+    )
+  );
+} else {
+  app.get('/', (req, res) => res.send('Please set to production'));
+}
+
+app.listen(port, () => console.log(`Server started on port ${port}`));
