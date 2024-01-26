@@ -1,18 +1,32 @@
-const asyncHandler = require('express-async-handler')
-const Post = require('../models/postModel')
+const asyncHandler = require('express-async-handler');
+const Post = require('../models/postModel');
+const redis = require('redis');
+const REDIS_PORT = process.env.REDIS_PORT || 6379;
+const client = redis.createClient(REDIS_PORT);
 
 // @desc    Get all posts
 // @route   GET /api/posts
 // @access  Public
 const getPosts = asyncHandler(async (req, res) => {
-  const posts = await Post.find({})
-  if (posts) {
-    res.json(posts)
-  } else {
-    res.status(404)
-    throw new Error('Posts not found')
-  }
-})
+  // Try fetching the data from Redis first
+  client.get('allPosts', async (err, posts) => {
+    if (posts) {
+      // If the data is in the cache, send it
+      res.json(JSON.parse(posts));
+    } else {
+      // If the data is not in the cache, fetch it from the database
+      posts = await Post.find({});
+      if (posts) {
+        // Store the data in the Redis cache
+        client.setex('allPosts', 3600, JSON.stringify(posts));
+        res.json(posts);
+      } else {
+        res.status(404);
+        throw new Error('Posts not found');
+      }
+    }
+  });
+});
 
 // @desc    Create a post
 // @route   POST /api/posts

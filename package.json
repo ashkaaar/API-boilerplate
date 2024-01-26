@@ -20,7 +20,8 @@
     "express-rate-limit": "^7.1.5",
     "faker": "^6.6.6",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.1.9"
+    "mongoose": "^6.1.9",
+    "redis": "3.1.2"
   },
   "devDependencies": {
     "@faker-js/faker": "^8.3.1",
