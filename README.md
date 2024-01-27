@@ -26,7 +26,9 @@ The data model for the blog posts includes fields for the title, content, author
 
 ## Running the Application
 
-To start the application, run `npm start` in the terminal. This command starts the Node.js application. The application will be accessible at `http://localhost:5001`.
+To start the application, first ensure that the Redis server is running. You can start the Redis server by running `redis-server` in the terminal. 
+
+After the Redis server is running, run `npm start` in the terminal. This command starts the Node.js application. The application will be accessible at `http://localhost:5001`.
 
 ## API Endpoints
 
