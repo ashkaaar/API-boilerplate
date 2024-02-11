@@ -1,4 +1,4 @@
-# Scooterson Backend Engineer Intern Technical Task
+# NodeJS Backend API boilerplate
 
 ## Description
 This project is a sophisticated Node.js application that leverages the power of Express.js for server-side operations and MongoDB as the NoSQL database. It includes a comprehensive set of RESTful API endpoints for managing blog posts in a CRUD (Create, Read, Update, Delete) fashion. The platform is designed with advanced features such as caching, search functionality, view tracking, and content-based recommendations.
